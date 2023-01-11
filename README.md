@@ -6,7 +6,7 @@ Create a conda enviroment and install necessary dependecies
 
 Activate the conda enviroment
 
-`conda activate RNA-seq_analysis
+`conda activate RNA-seq_analysis`
 
 Running the master python script
 
