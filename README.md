@@ -1,7 +1,7 @@
 # Running the reference based RNA-seq analysis
 
 Create a conda enviroment and install necessary dependecies
-*mamba env create -n RNA-seq_analysis -f DE_analysis.yaml*
+`mamba env create -n RNA-seq_analysis -f DE_analysis.yaml`
 
 Activate the conda enviroment
 *conda activate RNA-seq_analysis*
