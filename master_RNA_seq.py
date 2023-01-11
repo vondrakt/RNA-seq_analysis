@@ -106,7 +106,7 @@ os.system(command)
 # condition2    condition2_R3
 
 # first convert the .csv file to a .tsv file
-#convert_command = 'cat gene_count_matrix.csv | perl -pe "s/,/\t/g > gene_count_matrix.tsv"'
+convert_command = 'cat gene_count_matrix.csv | perl -pe "s/,/\t/g > gene_count_matrix.tsv"'
 out_tsv = open('./gene_count_matrix.tsv', 'w')
 with open('./gene_count_matrix.csv') as c:
     for line in c:
@@ -126,8 +126,17 @@ os.system(DE_analysis_command_DESeq2)
 # Extract those differentially expressed (DE) transcripts that are at least 4-fold differentially expressed
 # at a significance of <= 0.05 in any of the pairwise sample comparisons:
 
-analyze_DE = 'analyze_diff_expr.pl --matrix transcript_count_matrix.csv --samples samples.txt -P 0.05 -C 2'
+# The working directory needs to be changed
+new_dir = '%s/edgeR_genes' % options.path
+os.chdir(new_dir)
+analyze_DE = 'analyze_diff_expr.pl --matrix ../gene_count_matrix.tsv --samples %s -P 0.05 -C 2' % options.config_DE
 os.system(analyze_DE)
+
+new_dir = '%s/DESeq2_genes' % options.path
+os.chdir(new_dir)
+analyze_DE = 'analyze_diff_expr.pl --matrix ../gene_count_matrix.tsv --samples %s -P 0.05 -C 2' % options.config_DE
+os.system(analyze_DE)
+
 
 
 
