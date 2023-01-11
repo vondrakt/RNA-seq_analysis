@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from optparse import OptionParser
 import os
+import re
 
 # THIS IS A MASTER PYTHON SCRIPT FOR RUNNING A REFERENCE BASED RNA-SEQ ANALYSIS
 
@@ -52,11 +53,11 @@ for replicate in replicates:
     STAR_command_reference = 'STAR --runMode genomeGenerate --runThreadN 30 --genomeDir TAIR10_STAR --sjdbGTFfile %s --genomeFastaFiles %s' % (options.annotation_gtf, options.genome)
     print(STAR_command_reference)
     os.system(STAR_command_reference)
-    STAR_command_reads_sample1 = 'STAR --genomeDir TAIR10_STAR --runThreadN 30 --readFilesIn %s_1P.fastq.gz ' \
+    STAR_command_reads_sample1 = 'STAR --genomeDir TAIR10_STAR --runThreadN 10 --readFilesIn %s_1P.fastq.gz ' \
                          '--readFilesCommand zcat --quantMode GeneCounts --outFileNamePrefix %s.sorted.bam -' \
                          '-outSAMtype BAM SortedByCoordinate' % (samples[0]+replicate, samples[0]+replicate)
 
-    STAR_command_reads_sample2 = 'STAR --genomeDir TAIR10_STAR --runThreadN 30 --readFilesIn %s_2P.fastq.gz ' \
+    STAR_command_reads_sample2 = 'STAR --genomeDir TAIR10_STAR --runThreadN 10 --readFilesIn %s_2P.fastq.gz ' \
                          '--readFilesCommand zcat --quantMode GeneCounts --outFileNamePrefix %s.sorted.bam -' \
                          '-outSAMtype BAM SortedByCoordinate' % (samples[1] + replicate, samples[1] + replicate)
 
@@ -105,8 +106,13 @@ os.system(command)
 # condition2    condition2_R3
 
 # first convert the .csv file to a .tsv file
-convert_command = 'cat gene_count_matrix.csv | perl -pe "s/,/\t/g > gene_count_matrix.tsv"'
-os.system(convert_command)
+#convert_command = 'cat gene_count_matrix.csv | perl -pe "s/,/\t/g > gene_count_matrix.tsv"'
+out_tsv = open('./gene_count_matrix.tsv', 'w')
+with open('./gene_count_matrix.csv') as c:
+    for line in c:
+        line = re.sub(',', '\t', line)
+        out_tsv.write(line)
+out_tsv.close()
 
 DE_analysis_command_edgeR = 'run_DE_analysis.pl --matrix gene_count_matrix.tsv --samples_file %s ' \
                       '--reference_sample condition1 --method edgeR --output edgeR_genes' % options.config_DE
