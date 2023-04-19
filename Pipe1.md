@@ -24,7 +24,9 @@ STAR --genomeDir TAIR10_STAR --runThreadN 30 --readFilesIn [trimmed_ourput]_1P.f
 # Create a stringtie samples file
 
 sample 1	path_to_sample1.gtf
+
 sample 2	path_to_sample2.gtf
+
 sample 3	path_to_sample2.gtf
 
 
